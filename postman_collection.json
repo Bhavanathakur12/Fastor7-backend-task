@@ -1,0 +1,379 @@
+{
+  "info": {
+    "_postman_id": "fastor7-crm-lead-api",
+    "name": "Fastor7 - CRM Lead Management REST API",
+    "description": "Complete Postman collection for testing the Fastor7 Node.js CRM Lead/Enquiry Management REST API with automated variable management.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "http://localhost:5000",
+      "type": "string"
+    },
+    {
+      "key": "token",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "counselor2Token",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "enquiryId",
+      "value": "",
+      "type": "string"
+    }
+  ],
+  "item": [
+    {
+      "name": "0. Health Check",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/api/health",
+          "host": ["{{baseUrl}}"],
+          "path": ["api", "health"]
+        }
+      }
+    },
+    {
+      "name": "1. Register Counselor (Alice)",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test('Status code is 201 Created', function () {",
+              "    pm.response.to.have.status(201);",
+              "});"
+            ],
+            "type": "text/javascript"
+          }
+        }
+      ],
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"name\": \"Counselor Alice\",\n  \"email\": \"alice@fastor7.com\",\n  \"password\": \"Password123!\"\n}"
+        },
+        "url": {
+          "raw": "{{baseUrl}}/api/auth/register",
+          "host": ["{{baseUrl}}"],
+          "path": ["api", "auth", "register"]
+        }
+      }
+    },
+    {
+      "name": "2. Login Counselor (Alice - Sets Token)",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test('Status code is 200 OK', function () {",
+              "    pm.response.to.have.status(200);",
+              "    var jsonData = pm.response.json();",
+              "    if (jsonData.data && jsonData.data.token) {",
+              "        pm.collectionVariables.set('token', jsonData.data.token);",
+              "    }",
+              "});"
+            ],
+            "type": "text/javascript"
+          }
+        }
+      ],
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"email\": \"alice@fastor7.com\",\n  \"password\": \"Password123!\"\n}"
+        },
+        "url": {
+          "raw": "{{baseUrl}}/api/auth/login",
+          "host": ["{{baseUrl}}"],
+          "path": ["api", "auth", "login"]
+        }
+      }
+    },
+    {
+      "name": "3. Register Counselor 2 (Bob)",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test('Status code is 201 Created', function () {",
+              "    pm.response.to.have.status(201);",
+              "});"
+            ],
+            "type": "text/javascript"
+          }
+        }
+      ],
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"name\": \"Counselor Bob\",\n  \"email\": \"bob@fastor7.com\",\n  \"password\": \"Password123!\"\n}"
+        },
+        "url": {
+          "raw": "{{baseUrl}}/api/auth/register",
+          "host": ["{{baseUrl}}"],
+          "path": ["api", "auth", "register"]
+        }
+      }
+    },
+    {
+      "name": "4. Login Counselor 2 (Bob - Sets Counselor 2 Token)",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test('Status code is 200 OK', function () {",
+              "    pm.response.to.have.status(200);",
+              "    var jsonData = pm.response.json();",
+              "    if (jsonData.data && jsonData.data.token) {",
+              "        pm.collectionVariables.set('counselor2Token', jsonData.data.token);",
+              "    }",
+              "});"
+            ],
+            "type": "text/javascript"
+          }
+        }
+      ],
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"email\": \"bob@fastor7.com\",\n  \"password\": \"Password123!\"\n}"
+        },
+        "url": {
+          "raw": "{{baseUrl}}/api/auth/login",
+          "host": ["{{baseUrl}}"],
+          "path": ["api", "auth", "login"]
+        }
+      }
+    },
+    {
+      "name": "5. Submit Public Enquiry (No Auth - Sets enquiryId)",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test('Status code is 201 Created', function () {",
+              "    pm.response.to.have.status(201);",
+              "    var jsonData = pm.response.json();",
+              "    if (jsonData.data && (jsonData.data.id || jsonData.data._id)) {",
+              "        pm.collectionVariables.set('enquiryId', String(jsonData.data.id || jsonData.data._id));",
+              "    }",
+              "});"
+            ],
+            "type": "text/javascript"
+          }
+        }
+      ],
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"name\": \"David Miller\",\n  \"email\": \"david.m@example.com\",\n  \"courseInterest\": \"Full Stack Web Development\",\n  \"phone\": \"+1-555-8832\",\n  \"message\": \"Interested in weekend batch schedules and course fees.\"\n}"
+        },
+        "url": {
+          "raw": "{{baseUrl}}/api/enquiries",
+          "host": ["{{baseUrl}}"],
+          "path": ["api", "enquiries"]
+        }
+      }
+    },
+    {
+      "name": "6. Fetch Public Unclaimed Enquiries (Alice Auth)",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test('Status code is 200 OK', function () {",
+              "    pm.response.to.have.status(200);",
+              "});"
+            ],
+            "type": "text/javascript"
+          }
+        }
+      ],
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer {{token}}"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/api/enquiries/public",
+          "host": ["{{baseUrl}}"],
+          "path": ["api", "enquiries", "public"]
+        }
+      }
+    },
+    {
+      "name": "7. Claim Enquiry (Alice Claims enquiryId)",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test('Status code is 200 OK and enquiry claimed', function () {",
+              "    pm.response.to.have.status(200);",
+              "    pm.expect(pm.response.json().data.claimed).to.eql(true);",
+              "});"
+            ],
+            "type": "text/javascript"
+          }
+        }
+      ],
+      "request": {
+        "method": "PATCH",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer {{token}}"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/api/enquiries/{{enquiryId}}/claim",
+          "host": ["{{baseUrl}}"],
+          "path": ["api", "enquiries", "{{enquiryId}}", "claim"]
+        }
+      }
+    },
+    {
+      "name": "8. Duplicate Claim Attempt (Bob tries claiming enquiryId - Expect 409)",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test('Status code is 409 Conflict', function () {",
+              "    pm.response.to.have.status(409);",
+              "});"
+            ],
+            "type": "text/javascript"
+          }
+        }
+      ],
+      "request": {
+        "method": "PATCH",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer {{counselor2Token}}"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/api/enquiries/{{enquiryId}}/claim",
+          "host": ["{{baseUrl}}"],
+          "path": ["api", "enquiries", "{{enquiryId}}", "claim"]
+        }
+      }
+    },
+    {
+      "name": "9. Fetch My Claimed Enquiries (Alice - Expect 1 Lead)",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test('Status code is 200 and lead is in my list', function () {",
+              "    pm.response.to.have.status(200);",
+              "    pm.expect(pm.response.json().data.count).to.be.at.least(1);",
+              "});"
+            ],
+            "type": "text/javascript"
+          }
+        }
+      ],
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer {{token}}"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/api/enquiries/my",
+          "host": ["{{baseUrl}}"],
+          "path": ["api", "enquiries", "my"]
+        }
+      }
+    },
+    {
+      "name": "10. Fetch My Claimed Enquiries (Bob - Expect 0 Leads)",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test('Status code is 200 and list is isolated for Bob', function () {",
+              "    pm.response.to.have.status(200);",
+              "    pm.expect(pm.response.json().data.count).to.eql(0);",
+              "});"
+            ],
+            "type": "text/javascript"
+          }
+        }
+      ],
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer {{counselor2Token}}"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/api/enquiries/my",
+          "host": ["{{baseUrl}}"],
+          "path": ["api", "enquiries", "my"]
+        }
+      }
+    }
+  ]
+}
